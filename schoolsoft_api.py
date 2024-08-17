@@ -16,14 +16,14 @@ def check_response(response):
     Checks the responses from the server and throws errors accordingly.
     """
     if response.status_code == 401:
-        raise ValueError("Old or incorrect token used, ensure you've got a working one with get_updated_token()")
+        raise ValueError("Old or incorrect token used, ensure you've got a working one with get_updated_token()", response.text)
     if response.status_code == 404:
         raise ValueError("Incorrect parameters passed to the API")
     if response.status_code == 500:
         raise ValueError("Unknown error with request")
 
 
-def get_app_key(username, password, school, write_file_path=None):
+def get_app_key(username, password, school="nti", write_file_path=None):
     """
     App key is the first step in authentication, it gets a key used to generate
     the token.
@@ -46,7 +46,7 @@ def get_app_key(username, password, school, write_file_path=None):
     return app_key_json
 
 
-def get_token(school, app_key_json=None, app_key_path=None, write_file_path=None):
+def get_token(school="nti", app_key_json=None, app_key_path=None, write_file_path=None):
     """
     Gets the token used for authentication from the app_key.
     Note that the token has an expiry date.
@@ -83,7 +83,7 @@ def get_token(school, app_key_json=None, app_key_path=None, write_file_path=None
     return token_json
 
 
-def get_lessons(token, school, org_id, write_file_path=None):
+def get_lessons(token, org_id, school="nti", write_file_path=None):
     """
     Gets the lessons based on token and schoolname.
     School is found in the url like this:
@@ -103,7 +103,7 @@ def get_lessons(token, school, org_id, write_file_path=None):
     return lesson_json
 
 
-def get_calendar(token, school, org_id, unix_time_start=None,
+def get_calendar(token, org_id, school="nti", unix_time_start=None,
                  unix_time_end=None, write_file_path=None):
     """
     Gets the calendar for the student based on unix timestamps (1597246367)
@@ -132,7 +132,7 @@ def get_calendar(token, school, org_id, unix_time_start=None,
     return calendar_json
 
 
-def get_lunch(token, school, org_id, write_file_path=None):
+def get_lunch(token, org_id, write_file_path=None, school="nti"):
     """
     Gets the lunch :)
     """
@@ -152,7 +152,7 @@ def get_lunch(token, school, org_id, write_file_path=None):
     return lunch_json
 
 
-def get_updated_token(school, app_key_json=None, app_key_path=None,
+def get_updated_token(school="nti", app_key_json=None, app_key_path=None,
                       token_json=None, token_path=None, write_file_path=None):
     """
     Basically get_token(), but looks at the previous tokens expiry date and
@@ -189,7 +189,7 @@ def get_updated_token(school, app_key_json=None, app_key_path=None,
     return token_json
 
 
-def get_user_info(token, school, write_file_path=None):
+def get_user_info(token, school="nti", write_file_path=None):
     """
     Gives the same info get_app_key(), but doesn't generate an app key.
     Should be used when you want to get user info and already have a token.
@@ -223,7 +223,7 @@ def get_schools(write_file_path=None):
 
 
 class Api:
-    def __init__(self, username, password, school):
+    def __init__(self, username, password, school="nti"):
         self.username = username
         self.password = password
         self.school = school
